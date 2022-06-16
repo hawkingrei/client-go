@@ -1263,6 +1263,7 @@ func (s *RegionRequestSender) getStoreToken(st *Store, limit int64) error {
 	count := st.tokenCount.Load()
 	if count < limit {
 		// Adding tokenCount is no thread safe, preferring this for avoiding check in loop.
+		logutil.BgLogger().Warn("tokenCount.Add(1)", zap.Stack("stack"))
 		st.tokenCount.Add(1)
 		return nil
 	}
