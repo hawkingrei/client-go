@@ -1263,8 +1263,8 @@ func (s *RegionRequestSender) getStoreToken(st *Store, limit int64) error {
 	count := st.tokenCount.Load()
 	if count < limit {
 		// Adding tokenCount is no thread safe, preferring this for avoiding check in loop.
-		logutil.BgLogger().Warn("tokenCount.Add(1)", zap.Stack("stack"))
 		st.tokenCount.Add(1)
+		logutil.BgLogger().Warn("tokenCount.Add(1)", zap.Int64("tokenCount", st.tokenCount.Load()), zap.Stack("stack"))
 		return nil
 	}
 	metrics.TiKVStoreLimitErrorCounter.WithLabelValues(st.addr, strconv.FormatUint(st.storeID, 10)).Inc()
@@ -1276,6 +1276,7 @@ func (s *RegionRequestSender) releaseStoreToken(st *Store) {
 	// Decreasing tokenCount is no thread safe, preferring this for avoiding check in loop.
 	if count > 0 {
 		st.tokenCount.Sub(1)
+		logutil.BgLogger().Warn("tokenCount.Sub(1)", zap.Int64("tokenCount", st.tokenCount.Load()), zap.Stack("stack"))
 		return
 	}
 	logutil.BgLogger().Warn("release store token failed, count equals to 0")
