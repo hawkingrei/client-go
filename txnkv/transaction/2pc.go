@@ -1968,6 +1968,7 @@ func (batchExe *batchExecutor) initUtils() error {
 
 // startWork concurrently do the work for each batch considering rate limit
 func (batchExe *batchExecutor) startWorker(exitCh chan struct{}, ch chan error, batches []batchMutations) {
+	logutil.Logger(batchExe.backoffer.GetCtx()).Info("debug batchExecutor.startWorker", zap.Stack("stack"))
 	for idx, batch1 := range batches {
 		waitStart := time.Now()
 		if exit := batchExe.rateLimiter.GetToken(exitCh); !exit {
