@@ -1267,6 +1267,7 @@ func (s *RegionRequestSender) getStoreToken(st *Store, limit int64) error {
 		logutil.BgLogger().Warn("tokenCount.Add(1)", zap.Int64("tokenCount", st.tokenCount.Load()), zap.Stack("stack"))
 		return nil
 	}
+	logutil.BgLogger().Error("tokenCount limit", zap.Int64("tokenCount", st.tokenCount.Load()), zap.Stack("stack"))
 	metrics.TiKVStoreLimitErrorCounter.WithLabelValues(st.addr, strconv.FormatUint(st.storeID, 10)).Inc()
 	return errors.WithStack(&tikverr.ErrTokenLimit{StoreID: st.storeID})
 }
