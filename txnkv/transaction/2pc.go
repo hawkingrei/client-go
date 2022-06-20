@@ -1268,6 +1268,7 @@ func (c *twoPhaseCommitter) cleanup(ctx context.Context) {
 	}
 	c.cleanWg.Add(1)
 	c.store.WaitGroup().Add(1)
+	logutil.Logger(ctx).Info("twoPhaseCommitter starts cleanup", zap.Stack("stack"))
 	go func() {
 		defer c.store.WaitGroup().Done()
 		if _, err := util.EvalFailpoint("commitFailedSkipCleanup"); err == nil {
