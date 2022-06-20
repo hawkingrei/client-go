@@ -2040,6 +2040,7 @@ func (batchExe *batchExecutor) process(batches []batchMutations) error {
 	// concurrently do the work for each batch.
 	ch := make(chan error, len(batches))
 	exitCh := make(chan struct{})
+	logutil.Logger(batchExe.backoffer.GetCtx()).Info("debug go batchExecutor.startWorker", zap.Stack("stack"), zap.Int("batch", len(batches)))
 	go batchExe.startWorker(exitCh, ch, batches)
 	// check results
 	for i := 0; i < len(batches); i++ {
