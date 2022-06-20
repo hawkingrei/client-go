@@ -1974,6 +1974,7 @@ func (batchExe *batchExecutor) startWorker(exitCh chan struct{}, ch chan error, 
 		if exit := batchExe.rateLimiter.GetToken(exitCh); !exit {
 			batchExe.tokenWaitDuration += time.Since(waitStart)
 			batch := batch1
+			logutil.BgLogger().Info("startWorker debug", zap.Stack("stack"))
 			go func() {
 				defer batchExe.rateLimiter.PutToken()
 				var singleBatchBackoffer *retry.Backoffer
