@@ -349,6 +349,7 @@ func (txn *KVTxn) GetScope() string {
 
 // Commit commits the transaction operations to KV store.
 func (txn *KVTxn) Commit(ctx context.Context) error {
+	logutil.BgLogger().Info("debug txn Commit", zap.Stack("stack"))
 	if span := opentracing.SpanFromContext(ctx); span != nil && span.Tracer() != nil {
 		span1 := span.Tracer().StartSpan("tikvTxn.Commit", opentracing.ChildOf(span.Context()))
 		defer span1.Finish()
